@@ -5,5 +5,5 @@ REPO = "rrw-demo"
 
 github = GithubWrapper.new ORG, REPO
 
-puts github.last_commit_age
+puts github.latest_commit_age
 
