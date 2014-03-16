@@ -10,8 +10,10 @@ class Arduino
   end
 
   def show_color hex
-    bytes = parse_hex hex
-    set_color bytes
+    unless hex == @current_hex
+      set_color parse_hex(hex)
+      @current_hex = hex
+    end
   end
 
   def led_off
