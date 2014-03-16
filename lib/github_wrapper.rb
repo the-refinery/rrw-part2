@@ -1,3 +1,4 @@
+require_relative '../config/github_config'
 require 'github_api'
 include Github
 
@@ -10,7 +11,11 @@ class GithubWrapper
     @owner = owner
     @repo = repo
 
-    @api = Github::Repos::Commits.new
+    if GITHUB_TOKEN.empty?
+      @api = Github::Repos::Commits.new
+    else
+      @api = Github::Repos::Commits.new oauth_token: GITHUB_TOKEN
+    end
   end
 
   def latest_commit_sha

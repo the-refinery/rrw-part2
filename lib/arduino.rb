@@ -6,12 +6,16 @@ class Arduino
     @sp = SerialPort.new "/dev/ttyACM0", 9600
     @sp.read_timeout = 500
     @debug = debug
-    sleeep 2
+    sleep 2
   end
 
   def show_color hex
     bytes = parse_hex hex
     set_color bytes
+  end
+
+  def led_off
+    show_color "#000000"
   end
 
   def close
