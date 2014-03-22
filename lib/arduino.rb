@@ -9,9 +9,9 @@ class Arduino
     sleep 2
   end
 
-  def show_color hex
+  def show_color hex, flag=false
     unless hex == @current_hex
-      set_color parse_hex(hex)
+      set_color parse_hex(hex, flag)
       @current_hex = hex
     end
   end
@@ -26,7 +26,7 @@ class Arduino
 
   private
 
-  def parse_hex hex
+  def parse_hex hex, flag
 
     unless hex[0] == "#"
       hex = "#" + hex
@@ -34,7 +34,13 @@ class Arduino
 
     m = hex.match /#(..)(..)(..)/
 
-    rgb = [m[1], m[2], m[3]].map {|x| x.hex.chr}
+    if flag
+      flag_byte = "FF"
+    else
+      flag_byte = "00"
+    end
+
+    rgb = [m[1], m[2], m[3], flag_byte].map {|x| x.hex.chr}
     rgb.join
   end
 

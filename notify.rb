@@ -30,7 +30,7 @@ while !done
   heartbeat_led.blink
 
   if age <= GREEN_MAX
-    @arduino.show_color GREEN
+    @arduino.show_color GREEN, true
   elsif age <= YELLOW_MAX
     @arduino.show_color YELLOW
   else
