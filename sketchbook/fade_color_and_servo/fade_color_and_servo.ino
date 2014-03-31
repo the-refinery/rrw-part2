@@ -1,6 +1,11 @@
+#include <Servo.h> 
+
 const int redPin = 9;
 const int greenPin = 10;
 const int bluePin = 11;
+const int servoPin = 3;
+
+const int bufferSize = 4;
 
 const int fadeStepInterval = 2;
 
@@ -12,6 +17,8 @@ int prevRed = red;
 int prevGreen = green;
 int prevBlue = blue;
 
+Servo myservo;
+
 void setup()
 {
   // initialize the serial communication:
@@ -19,21 +26,29 @@ void setup()
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
+  
+  myservo.attach(servoPin);
+  myservo.write(0);
 }
 
 void loop() {
-  char buffer[3];
+  char buffer[bufferSize];
   byte color[3];
   
   // check if data has been sent from the computer:
   if (Serial.available()) {
-     Serial.readBytes(buffer, 3);
+     Serial.readBytes(buffer, bufferSize);
   
      color[0] = byte(buffer[0]);
      color[1] = byte(buffer[1]);
      color[2] = byte(buffer[2]);
      
      crossFade(color);
+     
+     if (buffer[3] > 0)
+     {
+       runServo();
+     }
   }  
 }
 
@@ -69,14 +84,7 @@ void crossFade(byte color[3]) {
   int stepR = calculateStep(prevRed, color[0]);
   int stepG = calculateStep(prevGreen, color[1]); 
   int stepB = calculateStep(prevBlue, color[2]);
-
-  Serial.print("Target: ");
-  Serial.print(int(color[0]));
-  Serial.print(" / ");
-  Serial.print(int(color[1]));
-  Serial.print(" / ");  
-  Serial.println(int(color[2]));
-
+  
   for (int i = 0; i <= 1020; i++) {
     red = calculateVal(stepR, red, i);
     green = calculateVal(stepG, green, i);
@@ -86,17 +94,6 @@ void crossFade(byte color[3]) {
     analogWrite(greenPin, green);      
     analogWrite(bluePin, blue); 
 
-    if (i == 0 or i % 60 == 0) { // beginning, and every loopCount times
-        Serial.print("Loop/RGB: #");
-        Serial.print(i);
-        Serial.print(" | ");
-        Serial.print(red);
-        Serial.print(" / ");
-        Serial.print(green);
-        Serial.print(" / ");  
-        Serial.println(blue); 
-      } 
-
     delay(fadeStepInterval); // Pause for 'wait' milliseconds before resuming the loop
   }
   
@@ -104,7 +101,20 @@ void crossFade(byte color[3]) {
   prevRed = red; 
   prevGreen = green; 
   prevBlue = blue;
-  
-  Serial.println("DONE");
 }
 
+void runServo()
+{
+  int i;
+  
+  for (i=0; i < 3; i++)
+  {
+    myservo.write(45);
+    delay(300);
+     
+    myservo.write(135);
+    delay(300);
+  }
+  
+  myservo.write(0);
+}
