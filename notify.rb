@@ -7,7 +7,7 @@ ORG = "d-i"
 REPO = "rrw-demo"
 
 RED = "#ff0000"
-YELLOW = "#ffff00"
+YELLOW = "#ff7700"
 GREEN = "#00ff00"
 
 GREEN_MAX = 1
